@@ -108,19 +108,25 @@ int main()
 		-0.5f, 0.5f, 0.0f,
 		0.5f, 0.5f, 0.0f,
 		0.0f, 0.0f, 0.0f,
-		// second triangle
+	};
+
+	GLfloat verticesSec[] =
+	{
 		0.f, 0.f, 0.0f,
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f
 	};
 
-	GLuint VBO, VAO;//, EBO;
+	GLuint VBO, VAO, VBO2, VAO2;//, EBO;
 	glGenVertexArrays(1, &VAO);
+	glGenVertexArrays(1, &VAO2);
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &VBO2);
 	//glGenBuffers(1, &EBO);
 
 	// Bind Vertex Array.
 	glBindVertexArray(VAO);
+
 	// 0. Copy our vertices array in a buffer for OpenGL to use
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -131,6 +137,15 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//! Unbind Vertex Array.
+	glBindVertexArray(0);
+
+	glBindVertexArray(VAO2);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesSec), verticesSec, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//! Unbind Vertex Array.
 	glBindVertexArray(0);
@@ -159,7 +174,9 @@ int main()
 		// 2. Use our shader program when we want to render an object
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(VAO2);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
@@ -171,7 +188,9 @@ int main()
 	}
 
 	//glDeleteVertexArrays(1, &EBO);
+	glDeleteVertexArrays(1, &VAO2);
 	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO2);
 	glDeleteBuffers(1, &VBO);
 	//glDeleteBuffers(1, &EBO);
 
